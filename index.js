@@ -13,9 +13,8 @@ const pool = new Pool({
     rejectUnauthorized: false,
   },
 });
-// SQL command to create the 'abc' table
 const createTableQuery = `
-CREATE TABLE IF NOT EXISTS user1 (
+CREATE TABLE IF NOT EXISTS abc (
     id SERIAL PRIMARY KEY,
     username VARCHAR(255),
     email VARCHAR(255),
@@ -51,7 +50,7 @@ app.post("/register", async (req, res) => {
   const { username, email, password } = req.body;
   try {
     const result = await pool.query(
-      "INSERT INTO user1 (username, email, password) VALUES ($1, $2, $3) RETURNING *",
+      "INSERT INTO abc (username, email, password) VALUES ($1, $2, $3) RETURNING *",
       [username, email, password]
     );
     res.json({ message: "User registered successfully", user: result.rows[0] });
@@ -67,7 +66,7 @@ app.post("/login", async (req, res) => {
   const { username, password } = req.body;
   try {
     const result = await pool.query(
-      "SELECT * FROM user1 WHERE username = $1 AND password = $2",
+      "SELECT * FROM abc WHERE username = $1 AND password = $2",
       [username, password]
     );
     if (result.rows.length === 0) {
@@ -87,7 +86,7 @@ app.put("/profile/:id", async (req, res) => {
   console.log(id)
   try {
     const result = await pool.query(
-      `UPDATE user1 SET age = $1, dob = $2, contact = $3 WHERE id = $4 RETURNING *`,
+      `UPDATE abc SET age = $1, dob = $2, contact = $3 WHERE id = $4 RETURNING *`,
       [age, dob, contact,id]
     );
     res.json({
@@ -108,13 +107,9 @@ app.put("/profile/:id/edit", async (req, res) => {
   
     try {
       const result = await pool.query(
-        `UPDATE user1 SET age = $1, dob = $2, contact = $3 WHERE id = $4 RETURNING *`,
+        `UPDATE abc SET age = $1, dob = $2, contact = $3 WHERE id = $4 RETURNING *`,
         [age, dob, contact, id]
       );
-  
-    //   if (result.rows.length === 0) {
-    //     return res.status(404).json({ error: "User not found" });
-    //   }
   
       res.json({
         message: "Profile updated successfully",
